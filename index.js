@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const axios = require('axios')
+const d3 = require('d3')
 
 const id = "d75456e5099e1a296f5d"
 const secret = "009d78ce03d34d40a189850b9eb197bb12f2c9d8"
