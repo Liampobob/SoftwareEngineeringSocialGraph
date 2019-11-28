@@ -6,25 +6,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Hello</title>
+	<script src="https://d3js.org/d3.v4.js"></script>
+	<script src="home.js"></script>
 </head>
 
 <body>
 
 </body>
-<script>
-	const query = window.location.search.substring(1)
-  const token = query.split('access_token=')[1]
-	fetch('https://api.github.com/user', {
-			headers: {
-				Authorization: 'token ' + token
-			}
-		})
-		.then(res => res.json())
-		.then(res => {
-            console.log(res)
-			const nameNode = document.createTextNode(`Welcome, ${res.name}`)
-			document.body.appendChild(nameNode)
-		})
-</script>
+<div id="profile">
+	<script>
+		getInfo()
+	</script>
+</div>
+
+<div id="graph">
+	<script>
+		tmp()
+	</script>
+</div>
 
 </html>
