@@ -44,150 +44,148 @@ function generateRepos(element){
 }
 
 function createGraphs(repo){
-	document.getElementById('graph').innerHTML = '';
-	tmp(repo)
+	document.getElementById('legraph').innerHTML = '';
+	var header = document.createElement('h')
+	header.innerText = "Graphs relating to " + repo
+	document.getElementById('legraph').appendChild(header)
+	drawCommitHistoryGraph(repo)
+	drawLineChangeGraph(repo)
 }
 
-function tmp(repo){
-    var margin = { top: 60, right: 60, bottom: 60, left: 60 },
-		width = 580 - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+function drawCommitHistoryGraph(repo){
+	// set the dimensions and margins of the graph
+	var margin = {top: 30, right: 30, bottom: 30, left: 30},
+	width = 450 - margin.left - margin.right,
+	height = 450 - margin.top - margin.bottom;
 
 	// append the svg object to the body of the page
-	var svg = d3
-		.select(graph)
-		.append('svg')
-		.attr('width', width + margin.left + margin.right)
-		.attr('height', height + margin.top + margin.bottom)
-		.append('g')
-		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+	var svg = d3.select('#legraph')
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform",
+		"translate(" + margin.left + "," + margin.top + ")");
+
+	// Labels of row and columns
+	var myGroups = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	var myVars = ["0", "1",  "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+
+	// Build X scales and axis:
+	var x = d3.scaleBand()
+	.range([ 0, width ])
+	.domain([0,1,2,3,4,5,6])
+	.padding(0.01);
+	svg.append("g")
+	.attr("transform", "translate(0," + height + ")")
+	.call(d3.axisBottom(x))
+
+	// Build X scales and axis:
+	var y = d3.scaleBand()
+	.range([ height, 0 ])
+	.domain(myVars)
+	.padding(0.01);
+	svg.append("g")
+	.call(d3.axisLeft(y));
+
+	// Build color scale
+	var myColor = d3.scaleLinear()
+	.range(["White", "#05b08a"])
+	.domain([0,7])
 
 	//Read the data
 	d3.json('//api.github.com/repos/liampobob/' + repo + '/stats/punch_card', function(data) {
-		// ---------------------------//
-		//       AXIS  AND SCALE      //
-		// ---------------------------//
+	// create a tooltip
+	var tooltip = d3.select('#legraph')
+	.append("div")
+	.style("opacity", 0)
+	.attr("class", "tooltip")
+	.style("background-color", "white")
+	.style("border", "solid")
+	.style("border-width", "2px")
+	.style("border-radius", "5px")
+	.style("padding", "5px")
 
-		// Add X axis
-		var x = d3
-			.scaleLinear()
-			.domain([
-				0,
-				6
-			])
-			.range([
-				0,
-				width
-			]);
-		svg.append('g').attr('transform', 'translate(0,' + height + ')').call(d3.axisBottom(x).ticks(7));
+	// Three function that change the tooltip when user hover / move / leave a cell
+	var mouseover = function(d) {
+	tooltip.style("opacity", 1)
+	}
+	var mousemove = function(d) {
+	tooltip
+		.html("The exact value of<br>this cell is: " + d[2])
+		.style("left", (d3.mouse(this)[0]+70) + "px")
+		.style("top", (d3.mouse(this)[1]) + "px")
+	}
+	var mouseleave = function(d) {
+	tooltip.style("opacity", 0)
+	}
 
-		// Add X axis label:
-		svg.append('text').attr('text-anchor', 'end').attr('x', width).attr('y', height + 50).text('Day');
+	// add the squares
+	svg.selectAll()
+	.data(data)
+	.enter()
+	.append("rect")
+		.attr("x", function(d) { return x(d[0]) })
+		.attr("y", function(d) { return y(d[1]) })
+		.attr("width", x.bandwidth() )
+		.attr("height", y.bandwidth() )
+		.style("fill", function(d) { return myColor(d[2])} )
+	.on("mouseover", mouseover)
+	.on("mousemove", mousemove)
+	.on("mouseleave", mouseleave)
+	})
+}
 
-		// Add Y axis
-		var y = d3
-			.scaleLinear()
-			.domain([
-				0,
-				23
-			])
-			.range([
-				height,
-				0
-			]);
-		svg.append('g').call(d3.axisLeft(y).ticks(24));
 
-		// Add Y axis label:
-		svg
-			.append('text')
-			.attr('text-anchor', 'end')
-			.attr('x', 0)
-			.attr('y', -20)
-			.text('Hour')
-			.attr('text-anchor', 'start');
+function drawLineChangeGraph(repo){
 
-		// Add a scale for bubble size
-		var z = d3
-			.scaleSqrt()
-			.domain([
-				0,
-				25
-			])
-			.range([
-				0,
-				20
-			]);
+	// set the dimensions and margins of the graph
+	var margin = {top: 10, right: 30, bottom: 20, left: 50},
+		width = 460 - margin.left - margin.right,
+		height = 400 - margin.top - margin.bottom;
 
-		// Add a scale for bubble color
-		var myColor = d3
-			.scaleSqrt()
-			.domain([
-				0,
-				25
-			])
-			.range([
-				'white',
-				'green'
-			]);
+	// append the svg object to the body of the page
+	var svg = d3.select("#legraph")
+	.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform",
+			"translate(" + margin.left + "," + margin.top + ")");
 
-		// ---------------------------//
-		//      TOOLTIP               //
-		// ---------------------------//
+  // Parse the Data
+  d3.json('//api.github.com/repos/liampobob/' + repo + '/stats/contributors', function(data) {
+  console.log(data)
 
-		// -1- Create a tooltip div that is hidden by default:
-		var tooltip = d3
-			.select(graph)
-			.append('div')
-			.style('opacity', 0)
-			.attr('class', 'tooltip')
-			.style('background-color', 'black')
-			.style('border-radius', '5px')
-			.style('padding', '10px')
-			.style('color', 'white')
-			.style('position', 'absolute');
+  // List of groups = species here = value of the first column called group -> I show them on the X axis
+  var groups = d3.map(data, function(d){return(d.author.login)}).keys()
 
-		// -2- Create 3 functions to show (when mouse move but stay on same circle) / hide the tooltip
-		var showTooltip = function(d) {
-			tooltip.transition().duration(200);
-			tooltip
-				.style('opacity', 1)
-				.html('Commits: ' + d[2])
-				.style('left', d3.select(this).attr('cx') + 'px')
-				.style('top', d3.select(this).attr('cy') + 'px');
-		};
+  // Add X axis
+  var x = d3.scaleBand()
+      .domain(groups)
+      .range([0, width])
+      .padding([0.2])
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x).tickSizeOuter(0));
 
-		var hideTooltip = function(d) {
-			tooltip.transition().duration(200).style('opacity', 0);
-		};
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 20])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
 
-		// ---------------------------//
-		//       CIRCLES              //
-		// ---------------------------//
-
-		// Add dots
-		svg
-			.append('g')
-			.selectAll('dot')
-			.data(data)
-			.enter()
-			.append('circle')
-			.attr('class', function(d) {
-				return 'bubbles ' + d[2];
-			})
-			.attr('cx', function(d) {
-				return x(d[0]);
-			})
-			.attr('cy', function(d) {
-				return y(d[1]);
-			})
-			.attr('r', function(d) {
-				return z(d[2]);
-			})
-			.style('fill', function(d) {
-				return myColor(d[2]);
-			})
-			// -3- Trigger the functions for hover
-			.on('mouseover', showTooltip)
-			.on('mouseleave', hideTooltip);
-	});
+  // Show the bars
+  svg.append("g")
+    .selectAll("g")
+	.data(data)
+	.enter()
+	.append("rect")
+      .attr("fill", function() { return "#05b08a"; })
+	  .attr("x", function(d) { return x(d.author.login); })
+	  .attr("y", function(d) { return y(d.total); })
+	  .attr("height", function(d) { return (18*d.total) + 1; })
+	  .attr("width",x.bandwidth())
+})
 }
