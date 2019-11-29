@@ -44,10 +44,18 @@ function generateRepos(element){
 }
 
 function createGraphs(repo){
+	document.getElementById('title').innerHTML = '';
 	document.getElementById('legraph').innerHTML = '';
+	document.getElementById('title2').innerHTML = '';
 	var header = document.createElement('h')
 	header.innerText = "Graphs relating to " + repo
-	document.getElementById('legraph').appendChild(header)
+	document.getElementById('title').appendChild(header)
+	var title = document.createElement('h')
+	title.innerText = 'Heatmap of commits over each hour of the week.'
+	document.getElementById('title').appendChild(title)
+	var tmp = document.createElement('h')
+	tmp.innerText = 'Commits per contributor.'
+	document.getElementById('title2').appendChild(tmp)
 	drawCommitHistoryGraph(repo)
 	drawLineChangeGraph(repo)
 }
@@ -185,7 +193,7 @@ function drawLineChangeGraph(repo){
       .attr("fill", function() { return "#05b08a"; })
 	  .attr("x", function(d) { return x(d.author.login); })
 	  .attr("y", function(d) { return y(d.total); })
-	  .attr("height", function(d) { return (18*d.total) + 1; })
+	  .attr("height", function(d) { return (18*d.total); })
 	  .attr("width",x.bandwidth())
 })
 }

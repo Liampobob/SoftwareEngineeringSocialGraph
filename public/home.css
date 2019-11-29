@@ -14,7 +14,19 @@
 .graphBox {
     position: fixed;
     left: 15%;
+    top: 7%;
+}
+
+.title {
+    position: fixed;
+    left: 15%;
     top: 5%;
+}
+
+.title2 {
+    position: fixed;
+    left: 43%;
+    top: 7%;
 }
 
 /* The sidebar menu */
