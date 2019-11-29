@@ -1,4 +1,4 @@
-function getInfo(){
+function getInfo(element){
     const query = window.location.search.substring(1)
     const token = query.split('access_token=')[1]
     fetch('https://api.github.com/user', {
@@ -11,15 +11,19 @@ function getInfo(){
             var avatar = document.createElement('img')
             avatar.src = res.avatar_url
 			avatar.alt = '${res.login}'
-			avatar.height = 160
-			avatar.width = 160
-            document.getElementById('profile').appendChild(avatar)
-			var nameNode = document.createTextNode(`Welcome, ${res.login}.\n`)
-			document.getElementById('profile').appendChild(nameNode)
+			avatar.height = 225
+			avatar.width = 225
+			document.getElementById(element).appendChild(avatar)
+			var name = document.createElement('h')
+			name.innerText = `Welcome, ${res.login}.\n`
+			document.getElementById(element).appendChild(name)
+			var sidebar = document.createElement(`h`)
+			sidebar.innerText = 'Pick a repo:'
+			document.getElementById(element).appendChild(sidebar)
         })   
 }
 
-function generateRepos(){
+function generateRepos(element){
 	const query = window.location.search.substring(1)
     const token = query.split('access_token=')[1]
     fetch('https://api.github.com/users/liampobob/repos', {
@@ -29,13 +33,12 @@ function generateRepos(){
         })
         .then(res => res.json())
         .then(res => {
-			console.log(res)
 			for(i = 0; i < res.length; i ++){
 				var tmp = document.createElement('a')
 				tmp.href = '#'
-				tmp.onclick = createGraphs(res[i].name)
+				tmp.addEventListener('click', function() { createGraphs(this.innerHTML) }, false)
 				tmp.innerHTML = res[i].name + "\n"
-				document.getElementById('profile').appendChild(tmp)
+				document.getElementById(element).appendChild(tmp)
 			}
         })   
 }

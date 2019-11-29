@@ -11,14 +11,19 @@
 	<script src="home.js"></script>
 </head>
 
-<div id="profile" class="sidenav">
+<div id="profile" class="profile">
 	<script>
-		getInfo()
-		generateRepos()	
+		getInfo("profile")
 	</script>
-  </div>
+</div>
 
-<div id="graph">
+<div id="sidenav" class="sidenav">
+		<script>
+			generateRepos("sidenav")	
+		</script>
+</div>
+
+<div id="graph" class="graphBox">
 </div>
 
 </html>

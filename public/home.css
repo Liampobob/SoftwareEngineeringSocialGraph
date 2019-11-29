@@ -1,7 +1,7 @@
 /* The sidebar menu */
-.sidenav {
-    height: 100%; /* Full-height: remove this if you want "auto" height */
-    width: 160px; /* Set the width of the sidebar */
+.profile {
+    height: 30%; /* Full-height: remove this if you want "auto" height */
+    width: 225px; /* Set the width of the sidebar */
     position: fixed; /* Fixed Sidebar (stay in place on scroll) */
     z-index: 1; /* Stay on top */
     top: 0; /* Stay at the top */
@@ -11,9 +11,25 @@
     padding-top: 0px;
   }
 
-.graph {
+.graphBox {
     position: fixed;
-    top: 0;
-    left: 200;
-    border-left: 200;
+    left: 15%;
+    top: 5%;
+}
+
+/* The sidebar menu */
+.sidenav {
+    height: 70%; /* Full-height: remove this if you want "auto" height */
+    width: 225px; /* Set the width of the sidebar */
+    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+    z-index: 1; /* Stay on top */
+    top: 30%;
+    left: 0;
+    background-color: rgb(0, 160, 253); /* Black */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 0px;
+  }
+
+a {
+    margin-right: 200px;
 }
