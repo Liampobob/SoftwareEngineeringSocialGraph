@@ -8,17 +8,44 @@ function getInfo(){
         })
         .then(res => res.json())
         .then(res => {
-            console.log(res)
-            var avatar = document.createElement('img');
-            avatar.src = res.avatar_url;
-            avatar.alt = '${res.login}'
+            var avatar = document.createElement('img')
+            avatar.src = res.avatar_url
+			avatar.alt = '${res.login}'
+			avatar.height = 160
+			avatar.width = 160
             document.getElementById('profile').appendChild(avatar)
-            var nameNode = document.createTextNode(`Welcome, ${res.login}`)
-            document.getElementById('profile').appendChild(nameNode)
+			var nameNode = document.createTextNode(`Welcome, ${res.login}.\n`)
+			document.getElementById('profile').appendChild(nameNode)
         })   
 }
 
-function tmp(){
+function generateRepos(){
+	const query = window.location.search.substring(1)
+    const token = query.split('access_token=')[1]
+    fetch('https://api.github.com/users/liampobob/repos', {
+            headers: {
+                Authorization: 'token ' + token
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+			console.log(res)
+			for(i = 0; i < res.length; i ++){
+				var tmp = document.createElement('a')
+				tmp.href = '#'
+				tmp.onclick = createGraphs(res[i].name)
+				tmp.innerHTML = res[i].name + "\n"
+				document.getElementById('profile').appendChild(tmp)
+			}
+        })   
+}
+
+function createGraphs(repo){
+	document.getElementById('graph').innerHTML = '';
+	tmp(repo)
+}
+
+function tmp(repo){
     var margin = { top: 60, right: 60, bottom: 60, left: 60 },
 		width = 580 - margin.left - margin.right,
 		height = 500 - margin.top - margin.bottom;
@@ -33,7 +60,7 @@ function tmp(){
 		.attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 	//Read the data
-	d3.json('//api.github.com/repos/liampobob/LCA/stats/punch_card', function(data) {
+	d3.json('//api.github.com/repos/liampobob/' + repo + '/stats/punch_card', function(data) {
 		// ---------------------------//
 		//       AXIS  AND SCALE      //
 		// ---------------------------//
