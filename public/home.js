@@ -1,3 +1,5 @@
+const user = 'liampobob'
+
 function getInfo(element){
     const query = window.location.search.substring(1)
     const token = query.split('access_token=')[1]
@@ -26,7 +28,7 @@ function getInfo(element){
 function generateRepos(element){
 	const query = window.location.search.substring(1)
     const token = query.split('access_token=')[1]
-    fetch('https://api.github.com/users/liampobob/repos', {
+    fetch('https://api.github.com/users/' + user + '/repos', {
             headers: {
                 Authorization: 'token ' + token
             }
@@ -102,7 +104,7 @@ function drawCommitHistoryGraph(repo){
 	.domain([0,7])
 
 	//Read the data
-	d3.json('//api.github.com/repos/liampobob/' + repo + '/stats/punch_card', function(data) {
+	d3.json('//api.github.com/repos/' + user + '/' + repo + '/stats/punch_card', function(data) {
 	// create a tooltip
 	var tooltip = d3.select('#legraph')
 	.append("div")
@@ -162,7 +164,7 @@ function drawLineChangeGraph(repo){
 			"translate(" + margin.left + "," + margin.top + ")");
 
   // Parse the Data
-  d3.json('//api.github.com/repos/liampobob/' + repo + '/stats/contributors', function(data) {
+  d3.json('//api.github.com/repos/' + user + '/' + repo + '/stats/contributors', function(data) {
   console.log(data)
 
   // List of groups = species here = value of the first column called group -> I show them on the X axis
